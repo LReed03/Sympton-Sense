@@ -1,6 +1,6 @@
 # Symptom Sense
 
-Symptom Sense is a full-stack app that predicts symptom urgency levels using machine learning.
+Symptom Sense is a full-stack app that predicts symptom urgency levels using machine learning. It is not meant to replace professional medical opinions. Only for education.
 
 ## Features
 - Symptom input form
