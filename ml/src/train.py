@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import warnings
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
@@ -9,12 +10,18 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 
+warnings.filterwarnings("ignore")
 
 
 df = pd.read_csv('../data/Final_Augmented_dataset_Diseases_and_Symptoms.csv')
 
-X = df.iloc[:, :-1]
-y = df.iloc[:, -1]
+
+class_counts = df["diseases"].value_counts()
+valid_classes = class_counts[class_counts >= 5].index
+df = df[df["diseases"].isin(valid_classes)]
+
+X = df.drop(columns=["diseases"])
+y = df["diseases"]
 print(f"X shape: {X.shape}")
 print(f"y shape: {y.shape}")
 
@@ -39,24 +46,15 @@ pipe = Pipeline([
 
 param_grid = [
     {
-    'classifier': [LogisticRegression(max_iter=1000, random_state=0)],
-    'classifier__C': [0.1, 1, 10, 100],
-    'classifier__penalty': ['l1', 'l2'],
-    'classifier__fit_intercept': [True, False]
+        'classifier': [LogisticRegression(max_iter=1000, random_state=0, solver='liblinear')],
+        'classifier__C': [0.1, 1, 10],
+        'classifier__penalty': ['l1', 'l2']
     },
     {
-    'classifier': [KNeighborsClassifier()],
-    'classifier__n_neighbors': [3, 5, 7, 9],
-    'classifier__weights': ['uniform', 'distance'],
-    'classifier__metric': ['euclidean', 'manhattan']
-    },
-    {
-    'classifier': [RandomForestClassifier(random_state=0)],
-    'classifier__n_estimators': [300, 400, 500],
-    'classifier__max_depth': [5, 10, None],
-    'classifier__min_samples_split': [10, 20, 50],
-    'classifier__min_samples_leaf': [5, 10, 20],
-    'classifier__max_features': ['sqrt', 'log2'],
+        'classifier': [RandomForestClassifier(random_state=0)],
+        'classifier__n_estimators': [100, 200],
+        'classifier__max_depth': [10, None],
+        'classifier__max_features': ['sqrt']
     }
 ]
 
