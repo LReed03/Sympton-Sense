@@ -1,10 +1,13 @@
 import pandas as pd
+import pickle
 from pathlib import Path
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 csv_path = BASE_DIR / "data" / "Final_Augmented_dataset_Diseases_and_Symptoms.csv"
@@ -80,3 +83,17 @@ print("Best cross-validation train score: {:.2f}".format(
 print("Best cross-validation test score: {:.2f}".format(grid.best_score_))
 
 print("Test-set score: {:.2f}".format(grid.score(X_test, y_test)))
+
+y_pred = grid.predict(X_test)
+
+print(classification_report(y_test, y_pred))
+
+models_dir = BASE_DIR / "models"
+models_dir.mkdir(exist_ok=True)
+
+model_path = models_dir / "disease_model.pkl"
+
+with open(model_path, "wb") as f:
+    pickle.dump(grid.best_estimator_, f)
+
+print(f"Model saved to: {model_path}")
