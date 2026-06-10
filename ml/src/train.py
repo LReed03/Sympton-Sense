@@ -26,6 +26,8 @@ print(f"y shape: {y.shape}")
 print("Missing X values:", X.isnull().sum().sum())
 print("Missing y values:", y.isnull().sum())
 
+
+# Split the dataset into training and testing sets, ensuring that the class distribution is maintained in both sets using stratification.
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -34,11 +36,13 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
+# Create a machine learning pipeline that includes a StandardScaler for feature scaling and a Logistic Regression classifier. This pipeline will be used to perform hyperparameter tuning with GridSearchCV.
 pipe = Pipeline([
     ("scaler", StandardScaler()),
     ("classifier", LogisticRegression(max_iter=1000, random_state=0))
 ])
 
+# Define a parameter grid for both Logistic Regression and Random Forest to perform hyperparameter tuning using GridSearchCV.
 param_grid = [
     {
         "classifier": [
@@ -71,6 +75,7 @@ grid = GridSearchCV(
     n_jobs=-1
 )
 
+# Fit the GridSearchCV object to the training data to find the best hyperparameters for the model. After fitting, print the best parameters, cross-validation scores, and test-set score. Finally, save the best model to a file using pickle.
 grid.fit(X_train, y_train)
 
 print("Best params:")
@@ -88,6 +93,7 @@ y_pred = grid.predict(X_test)
 
 print(classification_report(y_test, y_pred))
 
+# Create the "models" directory if it doesn't exist, and save the best model from GridSearchCV to a file named "disease_model.pkl" using pickle. This allows the model to be loaded later for making predictions without needing to retrain it.
 models_dir = BASE_DIR / "models"
 models_dir.mkdir(exist_ok=True)
 
