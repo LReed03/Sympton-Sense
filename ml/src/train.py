@@ -68,6 +68,7 @@ pipeline = Pipeline(
 )
 
 
+# Define a parameter grid for both Logistic Regression and Random Forest to perform hyperparameter tuning using GridSearchCV.
 param_grid = [
     {
         "classifier": [

@@ -13,6 +13,8 @@ df = pd.read_csv(csv_path)
 feature_names = df.drop(columns=["diseases"]).columns.tolist()
 
 
+
+# This function takes a list of selected symptoms, creates a binary input vector, and uses the loaded model to predict the disease.
 def predict_disease(selected_symptoms):
     user_symptoms = {symptom : 0 for symptom in feature_names}
 
