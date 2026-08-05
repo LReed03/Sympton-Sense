@@ -9,6 +9,7 @@ builder.Services.AddSingleton<MachineLearningService>();
 var app = builder.Build();
 
 PythonEngine.Initialize();
+PythonEngine.BeginAllowThreads();
 
 app.Lifetime.ApplicationStopping.Register(() =>
 {
